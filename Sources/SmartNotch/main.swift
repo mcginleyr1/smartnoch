@@ -15,6 +15,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.menu = menu
 
         let model = model
+        model.agents.onDone = { model.flash(.text(icon: $0.icon, text: "Done")) }
         model.calendar.onUpcoming = { model.flash(.text(icon: "calendar", text: "\($0)m")) }
         monitors = [
             VolumeMonitor { model.flash(.level(icon: $0 == 0 ? "speaker.slash.fill" : "speaker.wave.2.fill", value: $0)) },
@@ -27,6 +28,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             },
         ]
     }
+}
+
+// Hook mode: `SmartNotch notify <agent> <state>` reports a coding-agent event to the running app.
+if CommandLine.arguments.count == 4, CommandLine.arguments[1] == "notify" {
+    postAgentEvent(agent: CommandLine.arguments[2], state: CommandLine.arguments[3])
+    exit(0)
 }
 
 let app = NSApplication.shared

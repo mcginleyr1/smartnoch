@@ -39,7 +39,7 @@ struct ActivityView: View {
 
     @ViewBuilder private var leading: some View {
         switch model.activity {
-        case .level(let icon, _), .text(let icon, _): Image(systemName: icon)
+        case .level(let icon, _), .text(let icon, _), .agent(let icon, _): Image(systemName: icon)
         case .music: Artwork(size: 22)
         case nil: EmptyView()
         }
@@ -49,6 +49,7 @@ struct ActivityView: View {
         switch model.activity {
         case .level(_, let value): ProgressView(value: value).tint(.white).padding(.horizontal, 10)
         case .text(_, let text): Text(text).monospacedDigit()
+        case .agent(_, let state): AgentBadge(state: state)
         case .music: Waveform()
         case nil: EmptyView()
         }
@@ -110,6 +111,7 @@ struct ExpandedView: View {
             Group {
                 switch model.tab {
                 case .widgets: WidgetsView()
+                case .agents: AgentsView()
                 case .files: FilesView()
                 case .clipboard: ClipboardView()
                 }

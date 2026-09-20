@@ -60,6 +60,46 @@ struct WidgetsView: View {
     }
 }
 
+struct AgentBadge: View {
+    let state: AgentState
+
+    var body: some View {
+        switch state {
+        case .working: ProgressView().controlSize(.small)
+        case .waiting: Image(systemName: "hand.raised.fill").foregroundStyle(.yellow)
+        case .done: Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+        case .idle: Image(systemName: "moon.zzz.fill").foregroundStyle(.gray)
+        }
+    }
+}
+
+struct AgentsView: View {
+    @Environment(AppModel.self) private var model
+
+    var body: some View {
+        if model.agents.sessions.isEmpty {
+            Text("No active agent sessions").foregroundStyle(.gray)
+        }
+        ScrollView(showsIndicators: false) {
+            VStack(spacing: 6) {
+                ForEach(model.agents.sessions) { session in
+                    HStack(spacing: 10) {
+                        Image(systemName: session.icon).frame(width: 20)
+                        Text(session.project).font(.callout.weight(.semibold)).lineLimit(1)
+                        Text(session.detail).font(.caption).foregroundStyle(.gray).lineLimit(1)
+                        Spacer()
+                        Text(session.state.rawValue).font(.caption).foregroundStyle(.gray)
+                        AgentBadge(state: session.state).frame(width: 20)
+                    }
+                    .padding(.horizontal, 12)
+                    .frame(height: 34)
+                    .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+                }
+            }
+        }
+    }
+}
+
 struct FilesView: View {
     @Environment(AppModel.self) private var model
     @State private var airDropTargeted = false

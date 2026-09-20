@@ -2,11 +2,12 @@ import AppKit
 import Observation
 
 enum Tab: String, CaseIterable {
-    case widgets, files, clipboard
+    case widgets, agents, files, clipboard
 
     var icon: String {
         switch self {
         case .widgets: "square.grid.2x2"
+        case .agents: "terminal"
         case .files: "tray.full"
         case .clipboard: "doc.on.clipboard"
         }
@@ -16,6 +17,7 @@ enum Tab: String, CaseIterable {
 enum Activity: Equatable {
     case level(icon: String, value: Double)
     case text(icon: String, text: String)
+    case agent(icon: String, state: AgentState)
     case music
 }
 
@@ -34,10 +36,13 @@ enum Activity: Equatable {
     let clipboard = ClipboardHistory()
     let calendar = CalendarEvents()
     let weather = Weather()
+    let agents = Agents()
 
     @ObservationIgnored private var hudDismiss: DispatchWorkItem?
 
-    var activity: Activity? { hud ?? (nowPlaying.isPlaying ? .music : nil) }
+    var activity: Activity? {
+        hud ?? agents.active.map { .agent(icon: $0.icon, state: $0.state) } ?? (nowPlaying.isPlaying ? .music : nil)
+    }
 
     var collapsedSize: CGSize {
         CGSize(width: notchSize.width + (activity == nil ? 0 : 2 * Self.wingWidth), height: notchSize.height)

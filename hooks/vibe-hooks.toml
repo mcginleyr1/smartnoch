@@ -1,0 +1,24 @@
+# Mistral Vibe: copy these entries into ~/.vibe/hooks.toml
+# Hooks print nothing and exit 0, so they never alter Vibe's behavior.
+# pre_tool reports "tool": SmartNotch shows working, then waiting if the tool has not finished
+# after 10s (Vibe has no approval event, and pre_tool fires before the permission prompt).
+
+[[hooks]]
+name = "smartnotch-pre-tool"
+type = "pre_tool"
+match = "*"
+command = "/Applications/SmartNotch.app/Contents/MacOS/SmartNotch notify vibe tool"
+timeout = 5
+
+[[hooks]]
+name = "smartnotch-post-tool"
+type = "post_tool"
+match = "*"
+command = "/Applications/SmartNotch.app/Contents/MacOS/SmartNotch notify vibe working"
+timeout = 5
+
+[[hooks]]
+name = "smartnotch-post-agent"
+type = "post_agent"
+command = "/Applications/SmartNotch.app/Contents/MacOS/SmartNotch notify vibe done"
+timeout = 5

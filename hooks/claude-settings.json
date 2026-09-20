@@ -1,0 +1,34 @@
+{
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": "/Applications/SmartNotch.app/Contents/MacOS/SmartNotch notify claude idle # smartnotch-agent-hook", "timeout": 5, "async": true }] }
+    ],
+    "UserPromptSubmit": [
+      { "hooks": [{ "type": "command", "command": "/Applications/SmartNotch.app/Contents/MacOS/SmartNotch notify claude working # smartnotch-agent-hook", "timeout": 5, "async": true }] }
+    ],
+    "PreToolUse": [
+      { "hooks": [{ "type": "command", "command": "/Applications/SmartNotch.app/Contents/MacOS/SmartNotch notify claude working # smartnotch-agent-hook", "timeout": 5, "async": true }] }
+    ],
+    "PostToolUse": [
+      { "hooks": [{ "type": "command", "command": "/Applications/SmartNotch.app/Contents/MacOS/SmartNotch notify claude working # smartnotch-agent-hook", "timeout": 5, "async": true }] }
+    ],
+    "PostToolUseFailure": [
+      { "hooks": [{ "type": "command", "command": "/Applications/SmartNotch.app/Contents/MacOS/SmartNotch notify claude working # smartnotch-agent-hook", "timeout": 5, "async": true }] }
+    ],
+    "PermissionRequest": [
+      { "hooks": [{ "type": "command", "command": "/Applications/SmartNotch.app/Contents/MacOS/SmartNotch notify claude waiting # smartnotch-agent-hook", "timeout": 5, "async": true }] }
+    ],
+    "Notification": [
+      {
+        "matcher": "permission_prompt|elicitation_dialog|agent_needs_input",
+        "hooks": [{ "type": "command", "command": "/Applications/SmartNotch.app/Contents/MacOS/SmartNotch notify claude waiting # smartnotch-agent-hook", "timeout": 5, "async": true }]
+      }
+    ],
+    "Stop": [
+      { "hooks": [{ "type": "command", "command": "/Applications/SmartNotch.app/Contents/MacOS/SmartNotch notify claude done # smartnotch-agent-hook", "timeout": 5, "async": true }] }
+    ],
+    "SessionEnd": [
+      { "hooks": [{ "type": "command", "command": "/Applications/SmartNotch.app/Contents/MacOS/SmartNotch notify claude ended # smartnotch-agent-hook", "timeout": 5, "async": true }] }
+    ]
+  }
+}
