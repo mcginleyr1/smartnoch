@@ -41,7 +41,11 @@ struct ActivityView: View {
     @ViewBuilder private var leading: some View {
         switch model.activity {
         case .level(let icon, _), .text(let icon, _): Image(systemName: icon)
-        case .agent(let session): Label(session.project, systemImage: session.icon).padding(.horizontal, 8)
+        case .agent(let session):
+            TimelineView(.animation(paused: session.state != .working)) { context in
+                let angle = session.state == .working ? context.date.timeIntervalSinceReferenceDate * 180 : 0
+                Image(systemName: session.icon).rotationEffect(.degrees(angle.truncatingRemainder(dividingBy: 360)))
+            }
         case .music: Artwork(size: 22)
         case nil: EmptyView()
         }
@@ -51,11 +55,7 @@ struct ActivityView: View {
         switch model.activity {
         case .level(_, let value): ProgressView(value: value).tint(.white).padding(.horizontal, 10)
         case .text(_, let text): Text(text).monospacedDigit()
-        case .agent(let session):
-            HStack(spacing: 6) {
-                AgentBadge(state: session.state)
-                Text(session.state.label)
-            }
+        case .agent(let session): if session.state != .working { AgentBadge(state: session.state) }
         case .music: Waveform()
         case nil: EmptyView()
         }

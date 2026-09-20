@@ -43,11 +43,11 @@ enum Activity: Equatable {
         hud ?? agents.active.map(Activity.agent) ?? (nowPlaying.isPlaying ? .music : nil)
     }
 
-    /// Agent activities carry text (project, state), so they get wider wings.
+    /// Agent activity is near-permanent while sessions run, so it stays small: just the agent's icon.
     var wingWidth: CGFloat {
         switch activity {
         case nil: 0
-        case .agent: 130
+        case .agent: 34
         default: 64
         }
     }
