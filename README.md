@@ -5,7 +5,8 @@ Dynamic-Island-style panel, and shows live activities in the "wings" beside it w
 
 ## Features
 
-- **Hover to expand** from the notch (on Macs without a notch, a pill at the top center of the menu bar).
+- **Hover to expand** from the notch. The panel follows the mouse across displays; on a display without a notch it is
+  invisible until you hover the top center of the menu bar, and only notifications (HUDs, agent done / needs you) pop a pill.
 - **Widgets tab**: now playing (Music / Spotify) with artwork and transport controls, upcoming calendar events, current weather.
 - **Agents tab**: live state of AI coding agent sessions (Claude Code, Mistral Vibe, anything with hooks) per project:
   working, waiting for you, done. The collapsed notch shows a spinner while an agent works, a yellow hand when one
@@ -74,5 +75,5 @@ Sessions with no events for 10 minutes (60 when waiting) are dropped.
 - Replacing the system volume/brightness HUD (ours shows alongside it; suppressing it needs a media-key event tap + Accessibility).
 - Now playing for arbitrary apps/browsers (needs the private MediaRemote framework, which macOS 15.4+ restricts).
 - Settings UI, keyboard shortcuts, clipboard search window, per-app clipboard ignore list, retention timers.
-- Multi-display placement (the panel lives on the notched display, else the primary one).
+- One panel per display (a single panel follows the mouse between displays).
 - Calendar "join meeting" links, precipitation alerts.

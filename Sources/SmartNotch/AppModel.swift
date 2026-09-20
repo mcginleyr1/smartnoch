@@ -28,6 +28,7 @@ enum Activity: Equatable {
     var tab = Tab.widgets
     var hud: Activity?
     var notchSize = CGSize.zero
+    var hasNotch = true
     var battery: (level: Int, charging: Bool)?
 
     let nowPlaying = NowPlaying()
@@ -39,8 +40,11 @@ enum Activity: Equatable {
 
     @ObservationIgnored private var hudDismiss: DispatchWorkItem?
 
+    /// Without a notch to extend, persistent activities would be a permanent pill: only notifications show.
     var activity: Activity? {
-        hud ?? agents.active.map(Activity.agent) ?? (nowPlaying.isPlaying ? .music : nil)
+        if let hud { return hud }
+        if let session = agents.active, hasNotch || session.state == .waiting { return .agent(session) }
+        return hasNotch && nowPlaying.isPlaying ? .music : nil
     }
 
     /// Agent activity is near-permanent while sessions run, so it stays small: just the agent's icon.

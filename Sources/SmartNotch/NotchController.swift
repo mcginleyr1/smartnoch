@@ -34,23 +34,24 @@ final class NotchController {
         }
     }
 
-    private var screen: NSScreen {
-        NSScreen.screens.first { $0.safeAreaInsets.top > 0 } ?? NSScreen.screens[0]
-    }
+    private var screen = NSScreen.screens[0]
 
+    /// Follows the mouse: the panel lives on whichever screen the pointer is on.
     private func place() {
-        let screen = screen
-        if let left = screen.auxiliaryTopLeftArea, let right = screen.auxiliaryTopRightArea, screen.safeAreaInsets.top > 0 {
+        screen = NSScreen.screens.first { NSMouseInRect(NSEvent.mouseLocation, $0.frame, false) } ?? NSScreen.screens[0]
+        model.hasNotch = screen.safeAreaInsets.top > 0
+        if let left = screen.auxiliaryTopLeftArea, let right = screen.auxiliaryTopRightArea, model.hasNotch {
             model.notchSize = CGSize(width: screen.frame.width - left.width - right.width, height: screen.safeAreaInsets.top)
         } else {
-            model.notchSize = CGSize(width: 180, height: max(24, screen.frame.maxY - screen.visibleFrame.maxY))
+            model.notchSize = CGSize(width: 0, height: max(24, screen.frame.maxY - screen.visibleFrame.maxY))
         }
         let size = AppModel.expandedSize
         panel.setFrame(NSRect(x: screen.frame.midX - size.width / 2, y: screen.frame.maxY - size.height, width: size.width, height: size.height), display: true)
     }
 
     private func trackMouse() {
-        let size = model.currentSize
+        if !model.expanded, !NSMouseInRect(NSEvent.mouseLocation, screen.frame, false) { place() }
+        let size = CGSize(width: max(model.currentSize.width, 180), height: model.currentSize.height)
         let frame = screen.frame
         let hotZone = NSRect(x: frame.midX - size.width / 2, y: frame.maxY - size.height, width: size.width, height: size.height)
             .insetBy(dx: -4, dy: -4)
