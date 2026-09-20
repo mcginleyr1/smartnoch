@@ -8,6 +8,7 @@ struct WidgetsView: View {
             Card { nowPlaying }.frame(width: 250)
             Card { calendar }
             Card { weather }.frame(width: 110)
+                .onTapGesture { NSWorkspace.shared.open(NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.weather")!) }
         }
     }
 
