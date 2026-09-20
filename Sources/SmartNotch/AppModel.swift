@@ -17,13 +17,12 @@ enum Tab: String, CaseIterable {
 enum Activity: Equatable {
     case level(icon: String, value: Double)
     case text(icon: String, text: String)
-    case agent(icon: String, state: AgentState)
+    case agent(AgentSession)
     case music
 }
 
 @Observable final class AppModel {
     static let expandedSize = CGSize(width: 640, height: 230)
-    static let wingWidth: CGFloat = 64
 
     var expanded = false
     var tab = Tab.widgets
@@ -41,11 +40,20 @@ enum Activity: Equatable {
     @ObservationIgnored private var hudDismiss: DispatchWorkItem?
 
     var activity: Activity? {
-        hud ?? agents.active.map { .agent(icon: $0.icon, state: $0.state) } ?? (nowPlaying.isPlaying ? .music : nil)
+        hud ?? agents.active.map(Activity.agent) ?? (nowPlaying.isPlaying ? .music : nil)
+    }
+
+    /// Agent activities carry text (project, state), so they get wider wings.
+    var wingWidth: CGFloat {
+        switch activity {
+        case nil: 0
+        case .agent: 130
+        default: 64
+        }
     }
 
     var collapsedSize: CGSize {
-        CGSize(width: notchSize.width + (activity == nil ? 0 : 2 * Self.wingWidth), height: notchSize.height)
+        CGSize(width: notchSize.width + 2 * wingWidth, height: notchSize.height)
     }
 
     var currentSize: CGSize { expanded ? Self.expandedSize : collapsedSize }

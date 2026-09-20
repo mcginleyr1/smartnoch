@@ -88,7 +88,7 @@ struct AgentsView: View {
                         Text(session.project).font(.callout.weight(.semibold)).lineLimit(1)
                         Text(session.detail).font(.caption).foregroundStyle(.gray).lineLimit(1)
                         Spacer()
-                        Text(session.state.rawValue).font(.caption).foregroundStyle(.gray)
+                        Text(session.agent.capitalized + " · " + session.state.label).font(.caption).foregroundStyle(.gray)
                         AgentBadge(state: session.state).frame(width: 20)
                     }
                     .padding(.horizontal, 12)

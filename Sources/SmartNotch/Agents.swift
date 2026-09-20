@@ -5,9 +5,18 @@ private let agentEvent = Notification.Name("com.smartnotch.agent")
 
 enum AgentState: String {
     case working, waiting, idle, done
+
+    var label: String {
+        switch self {
+        case .working: "Working"
+        case .waiting: "Needs you"
+        case .idle: "Idle"
+        case .done: "Done"
+        }
+    }
 }
 
-struct AgentSession: Identifiable {
+struct AgentSession: Identifiable, Equatable {
     let id: String
     let agent: String
     var cwd: String
@@ -19,7 +28,7 @@ struct AgentSession: Identifiable {
 
     var icon: String {
         switch agent {
-        case "claude": "sparkle"
+        case "claude": "asterisk"
         case "codex": "chevron.left.forwardslash.chevron.right"
         case "vibe": "wind"
         default: "cpu"

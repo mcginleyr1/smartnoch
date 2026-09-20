@@ -29,17 +29,19 @@ struct ActivityView: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            leading.frame(width: AppModel.wingWidth)
+            leading.frame(width: model.wingWidth)
             Spacer(minLength: model.notchSize.width)
-            trailing.frame(width: AppModel.wingWidth)
+            trailing.frame(width: model.wingWidth)
         }
         .font(.system(size: 13, weight: .medium))
         .foregroundStyle(.white)
+        .lineLimit(1)
     }
 
     @ViewBuilder private var leading: some View {
         switch model.activity {
-        case .level(let icon, _), .text(let icon, _), .agent(let icon, _): Image(systemName: icon)
+        case .level(let icon, _), .text(let icon, _): Image(systemName: icon)
+        case .agent(let session): Label(session.project, systemImage: session.icon).padding(.horizontal, 8)
         case .music: Artwork(size: 22)
         case nil: EmptyView()
         }
@@ -49,7 +51,11 @@ struct ActivityView: View {
         switch model.activity {
         case .level(_, let value): ProgressView(value: value).tint(.white).padding(.horizontal, 10)
         case .text(_, let text): Text(text).monospacedDigit()
-        case .agent(_, let state): AgentBadge(state: state)
+        case .agent(let session):
+            HStack(spacing: 6) {
+                AgentBadge(state: session.state)
+                Text(session.state.label)
+            }
         case .music: Waveform()
         case nil: EmptyView()
         }
@@ -92,11 +98,16 @@ struct ExpandedView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 14) {
+            HStack(spacing: 12) {
                 ForEach(Tab.allCases, id: \.self) { tab in
                     Button { model.tab = tab } label: {
-                        Image(systemName: tab.icon).foregroundStyle(model.tab == tab ? .white : .gray)
+                        HStack(spacing: 4) {
+                            Image(systemName: tab.icon)
+                            if model.tab == tab { Text(tab.rawValue.capitalized).font(.caption) }
+                        }
+                        .foregroundStyle(model.tab == tab ? .white : .gray)
                     }
+                    .help(tab.rawValue.capitalized)
                 }
                 Spacer()
                 if let battery = model.battery {
