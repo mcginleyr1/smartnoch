@@ -10,7 +10,8 @@ Dynamic-Island-style panel, and shows live activities in the "wings" beside it w
 - **Widgets tab**: now playing (Music / Spotify) with artwork and transport controls, upcoming calendar events, current weather.
 - **Agents tab**: live state of AI coding agent sessions (Claude Code, Mistral Vibe, anything with hooks) per project:
   working, waiting for you, done. The collapsed notch shows a spinner while an agent works, a yellow hand when one
-  needs you, and flashes "Done" when a turn finishes. See [Agent hooks](#agent-hooks).
+  needs you, and flashes "Done" when a turn finishes. Click a session to jump to its terminal: the exact Ghostty
+  terminal whose working directory matches the session, or just the terminal app for others. See [Agent hooks](#agent-hooks).
 - **Files tab**: drag files onto the notch to shelve up to 6 items; drag them back out, click to open, or drop on the AirDrop tile.
 - **Clipboard tab**: history of the last 30 copied texts/images; click to copy again. Entries marked concealed/transient
   by password managers are skipped. History lives in memory only.
@@ -31,7 +32,7 @@ Requires macOS 14+, the Xcode toolchain, and [just](https://github.com/casey/jus
 To start at login, add SmartNotch under System Settings > General > Login Items.
 
 The app is ad-hoc signed, so macOS re-prompts for permissions after each rebuild:
-Automation (Music/Spotify control and artwork), Calendars, and Location (weather).
+Automation (Music/Spotify control and artwork, Ghostty for focusing agent terminals), Calendars, and Location (weather).
 
 Weather uses CoreLocation when allowed. If location access is denied or Location Services is off, it falls back
 to an approximate position from your IP address via get.geojs.io.

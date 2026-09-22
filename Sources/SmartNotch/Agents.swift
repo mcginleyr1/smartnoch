@@ -19,6 +19,8 @@ enum AgentState: String {
 struct AgentSession: Identifiable, Equatable {
     let id: String
     let agent: String
+    /// Bundle ID of the app the agent runs in (its terminal), empty when unknown.
+    let app: String
     var cwd: String
     var state: AgentState
     var detail: String
@@ -67,7 +69,7 @@ struct AgentSession: Identifiable, Equatable {
         guard info["state"] != "ended" else { return }
 
         let toolPending = info["state"] == "tool"
-        let session = AgentSession(id: id, agent: info["agent"]!, cwd: info["cwd"]!,
+        let session = AgentSession(id: id, agent: info["agent"]!, app: info["app"] ?? "", cwd: info["cwd"]!,
                                    state: toolPending ? .working : AgentState(rawValue: info["state"]!)!, detail: info["detail"]!)
         sessions.insert(session, at: 0)
 
@@ -77,6 +79,19 @@ struct AgentSession: Identifiable, Equatable {
                 guard let index = self?.sessions.firstIndex(where: { $0.id == id && $0.updated == session.updated }) else { return }
                 self?.sessions[index].state = .waiting
             }
+        }
+    }
+
+    /// Brings the session's terminal to the front; in Ghostty, the exact terminal whose working directory matches.
+    func focus(_ session: AgentSession) {
+        NSRunningApplication.runningApplications(withBundleIdentifier: session.app).first?.activate()
+        guard session.app == "com.mitchellh.ghostty" else { return }
+        let cwd = session.cwd.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
+        DispatchQueue.global(qos: .userInitiated).async {
+            var error: NSDictionary?
+            NSAppleScript(source: "tell application id \"\(session.app)\" to focus (first terminal whose working directory is \"\(cwd)\")")!
+                .executeAndReturnError(&error)
+            if let error { NSLog("Focusing terminal for %@ failed: %@", session.cwd, error) }
         }
     }
 }
@@ -91,6 +106,7 @@ func postAgentEvent(agent: String, state: String) {
 
     DistributedNotificationCenter.default().postNotificationName(agentEvent, object: nil, userInfo: [
         "agent": agent,
+        "app": ProcessInfo.processInfo.environment["__CFBundleIdentifier"] ?? "",
         "state": state,
         "session": payload["session_id"] as? String ?? cwd,
         "cwd": cwd,

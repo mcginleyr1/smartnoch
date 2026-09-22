@@ -95,6 +95,8 @@ struct AgentsView: View {
                     .padding(.horizontal, 12)
                     .frame(height: 34)
                     .background(.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+                    .contentShape(RoundedRectangle(cornerRadius: 10))
+                    .onTapGesture { model.agents.focus(session) }
                 }
             }
         }

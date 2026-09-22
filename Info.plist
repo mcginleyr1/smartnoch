@@ -21,7 +21,7 @@
     <key>LSUIElement</key>
     <true/>
     <key>NSAppleEventsUsageDescription</key>
-    <string>SmartNotch controls Music and Spotify playback and reads the current artwork.</string>
+    <string>SmartNotch controls Music and Spotify playback, reads the current artwork, and focuses the terminal an agent runs in.</string>
     <key>NSCalendarsFullAccessUsageDescription</key>
     <string>SmartNotch shows your upcoming events in the notch.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
